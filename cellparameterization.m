@@ -11,6 +11,16 @@ rawdata = rawdata(2:end, :);
 
 epsilon = 0.001;
 
-U = rawdata.Voltage;
-I = -rawdata.Current; % Discharge is positve, and vise verca
+U = rawdata.Voltage';
+I = rawdata.Current';
+t = seconds(rawdata.TotalTime)';
+dt = 5/360; % hours
+energy = rawdata.Energy; % Wh
 
+
+plot(t, U)
+hold on
+plot(t, I)
+plot(t, energy)
+
+xlim([0 1000])

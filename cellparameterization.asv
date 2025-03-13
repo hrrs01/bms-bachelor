@@ -11,3 +11,8 @@ rawdata = rawdata(2:end, :);
 
 epsilon = 0.001;
 
+U = rawdata.Voltage;
+I = -rawdata.Current; % Discharge needs to be positive for the model
+t = rawdata.TotalTime;
+
+t_steps = t(1:end-1);
