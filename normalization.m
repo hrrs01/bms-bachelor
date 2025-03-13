@@ -78,24 +78,30 @@ for idx=1:length(soc)
     else
         M(idx, 6) = -current(idx);
     end
+    hk = 0;
     if current(idx) > epsilon
-        M(idx,8) = 1;
+        hk = 1;
     elseif current(idx) < -epsilon
-        M(idx,8) = -1;
+        hk = -1;
     else
         if idx>1
-            M(idx,8) = M(idx-1, 8);
+            hk = M(idx-1, 8);
         else
-            M(idx,8) = 1;
+            hk = 1;
         end
     end
+    M(idx,8) = -hk;
     
 end
 
-c = M\voltage';
+c = inv(M'*M)*M'*voltage';
 
 soc_test = 0.20:0.01:0.99;
 
-Uk = c(1) - c(2)./soc_test - soc_test*c(3) + c(4)*log(soc_test) + c(5) * log(1 - soc_test);
+Uocv = c(1) - c(2)./soc_test - soc_test*c(3) + c(4)*log(soc_test) + c(5) * log(1 - soc_test);
+Uout = Uocv - c(6) * 10 - c(8);
+Uin = Uocv - c(7) * -10 + c(8);
 hold on
-plot(soc_test, Uk, "Color", "red", "LineWidth", 2);
+plot(soc_test, Uocv, "Color", "red", "LineWidth", 2);
+plot(soc_test, Uin, "Color", "blue", "LineWidth", 2);
+plot(soc_test, Uout, "Color", "green", "LineWidth", 2);
