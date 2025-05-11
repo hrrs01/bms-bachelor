@@ -1,0 +1,16 @@
+close all; clc; clear;
+
+rawdata = readtable("Battery Bachelor Testdata/Heimir/Test/Cycle Testing Save 5/Cycle Testing of P28B Cell1 Save5.csv");
+% trim first line as it is always garbage for some reason
+
+idx = rawdata.StepIndex == 2 | rawdata.StepIndex == 4;
+
+rowsToChange = 
+
+filtereddata = rawdata(idx, :);
+time = filtereddata.TotalTime;
+plot(filtereddata.TotalTime, filtereddata.Voltage);
+
+hold on;
+plot(time, filtereddata.SOC_DOD)
+plot(filtereddata.TotalTime, filtereddata.Current);

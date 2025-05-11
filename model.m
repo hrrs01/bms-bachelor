@@ -94,3 +94,4 @@ dchg = ocv - vars(7) * 0.56 - vars(8);
 plot(soc_test, ocv, "Color", "red", "LineWidth", 0.5);
 plot(soc_test, chg, "Color", "green", "LineWidth", 0.5);
 plot(soc_test, dchg, "Color", "blue", "LineWidth", 0.5);
+
