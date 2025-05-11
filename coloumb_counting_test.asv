@@ -1,0 +1,50 @@
+clear; clc; close all;
+
+lookuptable = readtable("lookuptable.csv");
+
+test_data = readtable("Battery Bachelor Testdata/Heimir/Test/Cycle Testing Save 1/Cycle Testing of P28B cell1.csv");
+% Throw first row, as its empty
+test_data = test_data(2:end, :);
+
+discharge_idx = test_data.Current < 0;
+
+max_capacity = max(test_data.Capacity) * 1000; % mAh, conservative estimate
+
+first = true;
+initial_soc = 0;
+soc_history = zeros(length(test_data.TotalTime), 2);
+for k=1:length(test_data.TotalTime)
+    if first
+        init_volt = test_data.Voltage(k);
+        for i=1:length(lookuptable.Var1)
+            if lookuptable.Var2(i) > init_volt
+                % Find first SOC with a higher voltage than this one
+                diff1 = lookuptable.Var2(i) - lookuptable.Var2(i-1);
+                diff2 = lookuptable.Var2(i) - init_volt;
+                initial_soc = lookuptable.Var1(i-1) + (diff2/diff1);
+                soc_history(1,1) = initial_soc;
+                soc_history(1,2) = initial_soc/100 * max_capacity;
+                break
+            end
+        end
+        first = false;
+    else
+        delta_time = test_data.TotalTime(k) - test_data.TotalTime(k-1);
+        delta_time = seconds(delta_time) / 3600; % Hours
+        current = test_data.Current(k) * 1000; % mA
+        spent_capacity = current * delta_time;
+        soc_history(k, 2) = soc_history(k-1,2) + spent_capacity;
+        soc_history(k, 1) = 100 * soc_history(k, 2) / max_capacity;
+    end
+    
+end
+
+time = test_data.TotalTime;
+plot(time, soc_history(:, 1));
+
+hold on
+plot(time, soc_history(:, 2)/1000); % in Ah
+
+
+
+plot(time, test_data.Voltage);
