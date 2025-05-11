@@ -19,3 +19,16 @@ time = filtereddata.TotalTime;
 % plot(filtereddata.TotalTime, filtereddata.Current);
 
 plot(filtereddata.SOC_DOD, filtereddata.Voltage)
+hold on
+lookuptable = zeros(101, 1);
+
+for k=0:(length(lookuptable)-1)
+    matches = filtereddata.SOC_DOD >= k-0.5 & filtereddata.SOC_DOD < k+0.5;
+    avg_voltage = mean(filtereddata.Voltage(matches));
+    lookuptable(k+1) = avg_voltage;
+end
+
+plot(0:(length(lookuptable)-1), lookuptable, Color="red", LineWidth=1);
+socs = 0:100;
+tab = array2table([socs', lookuptable]);
+writetable(tab, "lookuptable.csv");
