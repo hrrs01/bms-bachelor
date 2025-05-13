@@ -1,5 +1,7 @@
+%% Clear
 clear; close all; clc;
 
+%% Load data
 % Load test data
 cell1 = readtable("Battery Bachelor Testdata/Heimir/Test/Cycle Testing Save 1/Cycle Testing of P28B cell1.csv");
 % Throw first row, as its empty
@@ -12,6 +14,8 @@ cell2 = cell2(2:10700, :);
 cell3 = readtable("Battery Bachelor Testdata/Heimir/Test/Cycle Testing Save 1/Cycle Testing of P28B cell3.csv");
 % Throw first row, as its empty
 cell3 = cell3(2:10700, :);
+
+%% Connect
 
 % Connect to CAN
 can_channel = canChannel('SocketCAN', 'can0');

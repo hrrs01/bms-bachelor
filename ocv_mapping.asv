@@ -37,10 +37,5 @@ socs = 0:100;
 tab = array2table([socs', lookuptable]);
 writetable(tab, "lookuptable.csv");
 
-dc_idx = filtereddata.Current < 0;
-cc_idx = filtereddata.Current > 0;
-
-%%
-max_cc_capacity = max(filtereddata.Capacity(cc_idx));
-max_dc_capacity = max(filtereddata.Capacity(dc_idx));
+filtereddata.
 
