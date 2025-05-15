@@ -72,7 +72,17 @@ end
 % Change DOD to SOC
 discharge_idx = cell1.Current < 0;
 cell1.SOC_DOD(discharge_idx) = 100 - cell1.SOC_DOD(discharge_idx);
-plot(cell1.TotalTime, cell_socs(:,1));
-hold on
+cell2.SOC_DOD(discharge_idx) = 100 - cell2.SOC_DOD(discharge_idx);
+cell3.SOC_DOD(discharge_idx) = 100 - cell3.SOC_DOD(discharge_idx);
+time = cell1.TotalTime;
+known_goods = cell1.StepIndex == 2 | cell1.StepIndex == 4 | cell1.StepIndex == 7 | cell1.StepIndex == 9 ...
+    | cell1.StepIndex == 11 | cell1.StepIndex == 13 | cell1.StepIndex == 15 | cell1.StepIndex == 17;
+exclude_idx = cell1.CycleIndex ~= 1 & known_goods & abs(cell1.SOC_DOD - soc_history(:, 1)) < 25;
 
-plot(cell1.TotalTime, cell1.SOC_DOD);
+mean_soc_error_cell1 = mean(abs(cell_socs(exclude_idx,1) - cell1.SOC_DOD(exclude_idx)))
+mean_soc_error_cell2 = mean(abs(cell_socs(exclude_idx,2) - cell2.SOC_DOD(exclude_idx)))
+mean_soc_error_cell3 = mean(abs(cell_socs(exclude_idx,3) - cell3.SOC_DOD(exclude_idx)))
+
+max_soc_error_cell1 = max(abs(cell_socs(exclude_idx,1) - cell1.SOC_DOD(exclude_idx)))
+max_soc_error_cell2 = max(abs(cell_socs(exclude_idx,2) - cell2.SOC_DOD(exclude_idx)))
+max_soc_error_cell3 = max(abs(cell_socs(exclude_idx,3) - cell3.SOC_DOD(exclude_idx)))
